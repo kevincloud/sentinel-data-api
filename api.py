@@ -20,6 +20,7 @@ table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connectio
 table_name = identifier + "-cosmos-table"
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/list/<list_name>', strict_slashes=False, methods=['GET'])
 def get_list(list_name):
