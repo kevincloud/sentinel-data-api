@@ -4,7 +4,6 @@ import json
 import configparser
 from flask import Flask
 from flask import request
-from flask import render_template
 from flask_cors import CORS
 from azure.cosmosdb.table.tableservice import TableService
 from azure.cosmosdb.table.models import Entity
