@@ -59,7 +59,7 @@
                             {% for inst in appinst %}
                             <div class="notification box px-4 py-1 my-3 has-background-light has-text-left">
                                 {{ inst }}
-                                <button class="delete" value="{{ inst }}" onclick="deleteRequiredModule(this);"></button>
+                                <button class="delete" value="{{ inst }}" onclick="deleteAllowedInstance(this);"></button>
                            </div>
                            {% endfor %}
                            <!-- end element -->
@@ -82,7 +82,7 @@
                             {% for res in probres %}
                             <div class="notification box px-4 py-1 my-3 has-background-light has-text-left">
                                 {{ res }}
-                                <button class="delete" value="{{ res }}" onclick="deleteRequiredModule(this);"></button>
+                                <button class="delete" value="{{ res }}" onclick="deleteProhibitedResource(this);"></button>
                            </div>
                            {% endfor %}
                            <!-- end element -->
