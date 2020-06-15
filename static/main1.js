@@ -4,8 +4,9 @@ function deleteRequiredModule(item) {
         success: function(result) {
             window.location.reload();
         },
-        error: function(result) {
-            alert(result);
+        error: function(req, status, err) {
+            console.log('Error', status, err)
+            alert(err);
         }
     });
 }
@@ -16,8 +17,9 @@ function deleteAllowedInstance(item) {
         success: function(result) {
             window.location.reload();
         },
-        error: function(result) {
-            alert(result);
+        error: function(req, status, err) {
+            console.log('Error', status, err)
+            alert(err);
         }
     });
 }
@@ -28,8 +30,9 @@ function deleteProhibitedResource(item) {
         success: function(result) {
             window.location.reload();
         },
-        error: function(result) {
-            alert(result);
+        error: function(req, status, err) {
+            console.log('Error', status, err)
+            alert(err);
         }
     });
 }
