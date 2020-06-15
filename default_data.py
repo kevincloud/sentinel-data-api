@@ -13,13 +13,10 @@ connection_string = "DefaultEndpointsProtocol=https;AccountName=" + account_name
 table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connection_string=connection_string)
 table_name = identifier + "-cosmos-table"
 
-connection_string = "DefaultEndpointsProtocol=https;AccountName=kevincx-cosmos-db;AccountKey=u2y45eppqI8OjJbVGZxlyYBzFBVWrRdDnRNrWPLJh82F3z85Jy2RWG0nR96UUDBPVcIznqeggsUokOdqYdxquA==;TableEndpoint=https://kevincx-cosmos-db.table.cosmos.azure.com:443/;"
-table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connection_string=connection_string)
-
 # Start over
 items = table_service.query_entities(table_name)
-for item in items:
-    table_service.delete_entity(table_name, item.PartitionKey, item.RowKey)
+for itm in items:
+    table_service.delete_entity(table_name, itm.PartitionKey, itm.RowKey)
 
 # Add new entries
 item = Entity()
