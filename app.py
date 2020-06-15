@@ -4,6 +4,7 @@ import json
 import configparser
 from flask import Flask
 from flask import request
+from flask import render_template
 from flask_cors import CORS
 from azure.cosmosdb.table.tableservice import TableService
 from azure.cosmosdb.table.models import Entity
@@ -21,69 +22,15 @@ table_name = identifier + "-cosmos-table"
 
 app = Flask(__name__)
 
-@app.route('/list/<list_name>', strict_slashes=False, methods=['GET'])
-def get_list(list_name):
-    logging.info('Started function get_list()')
+@app.route("/")
+def index():
+    reqmods = [
+        "custom-vnet",
+        "custom-sg",
+        "custom-blog"
+    ]
 
-    policylist = list_name
-    additem = get_value(request, 'add')
-    delitem = get_value(request, 'remove')
-
-    listvalues = []
-    if policylist:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq '" + policylist + "'")
-        for item in items:
-            listvalues.append(item.RowKey)
-    else:
-        return json.dumps(listvalues)
-    
-    if additem:
-        if add_item(policylist, additem):
-            listvalues.append(additem)
-        else:
-            return json.dumps(listvalues)
-    
-    if delitem:
-        if remove_item(policylist, delitem):
-            listvalues.remove(delitem)
-        else:
-            return json.dumps(listvalues)
-    
-    return json.dumps(listvalues)
-
-def get_value(request, key):
-    retval = request.params.get(key)
-    if not retval:
-        try:
-            req_body = request.get_json()
-        except ValueError:
-            pass
-        else:
-            retval = req_body.get(key)
-    return retval
-
-def add_item(listname, value):
-    item = Entity()
-    item.PartitionKey = listname
-    item.RowKey = value
-    try:
-        table_service.insert_entity(table_name, item)
-    except ValueError:
-        return False
-    
-    return True
-
-def remove_item(listname, value):
-    try:
-        table_service.delete_entity(table_name, listname, value)
-    except ValueError:
-        return False
-    
-    return True
-
-def get_value(req, key):
-    return req.args.get(key)
-
+    render_template("index.html", reqmods=reqmods)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)

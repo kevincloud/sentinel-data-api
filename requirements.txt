@@ -1,0 +1,6 @@
+azure-common
+azure-cosmosdb-nspkg
+azure-cosmosdb-table
+azure-nspkg
+Flask
+Flask-Cors
