@@ -11,6 +11,12 @@
         <script src="{{ url_for('static', filename='main.js') }}"></script>
         <style>
             .ellipsis {
+                display: block;
+                /* Fallback for non-webkit */
+                display: -webkit-box;
+                /*   max-width: 400px; */
+                /*   height: 109.2px; */
+                /* Fallback for non-webkit */
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
