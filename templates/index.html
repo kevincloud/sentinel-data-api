@@ -11,18 +11,9 @@
         <script src="{{ url_for('static', filename='main.js') }}"></script>
         <style>
             .ellipsis {
-                display: block;
-                /* Fallback for non-webkit */
-                display: -webkit-box;
-                /*   max-width: 400px; */
-                /*   height: 109.2px; */
-                /* Fallback for non-webkit */
-                margin: 0 auto;
-                /*   font-size: 26px; */
-                line-height: 1.4;
-                -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                white-space: nowrap;
             }
             .spanbox {
                 width: 80%;
@@ -134,7 +125,7 @@
                             <!-- start element -->
                             {% for res in probres %}
                             <div class="notification box px-4 py-1 my-3 has-background-light has-text-left">
-                                <span class="spanbox ellipsis">{{ res }}</span>
+                                <span class="spanbox ellipsis" data-tooltip="{{ res }}">{{ res }}</span>
                                 <button class="delete" value="{{ res }}" onclick="deleteProhibitedResource(this);"></button>
                            </div>
                            {% endfor %}
