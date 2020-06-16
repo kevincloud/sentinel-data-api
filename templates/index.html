@@ -85,8 +85,10 @@
                             </form>
                             <!-- start element -->
                             {% for mod in reqmods %}
-                            <div class="notification box px-4 py-1 my-3 has-background-light has-text-left ellipsis">
-                                {{ mod }}
+                            <div class="notification box px-4 py-1 my-3 has-background-light has-text-left" data-tooltip="{{ mod }}">
+                                <div class="ellipsis">
+                                    {{ mod }}
+                                </div>
                                 <button class="delete" value="{{ mod }}" onclick="deleteRequiredModule(this);"></button>
                            </div>
                            {% endfor %}
@@ -108,8 +110,10 @@
                             </form>
                             <!-- start element -->
                             {% for inst in appinst %}
-                            <div class="notification box px-4 py-1 my-3 has-background-light has-text-left ellipsis">
-                                {{ inst }}
+                            <div class="notification box px-4 py-1 my-3 has-background-light has-text-left" data-tooltip="{{ inst }}">
+                                <div class="ellipsis">
+                                    {{ inst }}
+                                </div>
                                 <button class="delete" value="{{ inst }}" onclick="deleteApprovedInstance(this);"></button>
                            </div>
                            {% endfor %}
@@ -131,7 +135,7 @@
                             </form>
                             <!-- start element -->
                             {% for res in probres %}
-                            <div class="notification box px-4 py-1 my-3 has-background-light has-text-left" data-tooltip="{{ res }}">
+                            <div class="notification box pl-4 pr-6 py-1 my-3 has-background-light has-text-left" data-tooltip="{{ res }}">
                                 <div class="ellipsis">
                                     {{ res }}
                                 </div>
