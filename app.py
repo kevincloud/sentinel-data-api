@@ -25,7 +25,7 @@ def index():
     res = requests.get('http://localhost:8080/list/prohibited-resources')
     probres = json.loads(res.text)
 
-    res = requests.get('http://localhost:8080/list/can-delete')
+    res = requests.get('http://localhost:8080/can-delete')
     candelete = json.loads(res.text)
 
     return render_template("index.html", reqmods=reqmods, appinst=appinst, probres=probres, candelete=candelete)
