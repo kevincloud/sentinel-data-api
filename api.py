@@ -62,10 +62,14 @@ def set_provider():
     provider = get_value(request, 'provider')
     update_item("default-provider", provider)
 
+    return '{ "status": "ok" }'
+
 @app.route('/deletion-policy', strict_slashes=False, methods=['GET'])
 def set_provider():
     value = get_value(request, 'value')
     update_item("prevent-deletion", value)
+
+    return '{ "status": "ok" }'
 
 @app.route('/can-delete', strict_slashes=False, methods=['GET'])
 def can_delete():
