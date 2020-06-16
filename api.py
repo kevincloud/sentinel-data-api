@@ -111,8 +111,7 @@ def reset_data():
             "custom-sg|azurerm",
             "custom-blob|azurerm",
             "custom-vpc|aws",
-            "custom-sg|aws",
-            "custom-s3|aws"
+            "custom-sg|aws"
         ],
         "approved-instances": [
             "Standard_A1_v2|azurerm",
