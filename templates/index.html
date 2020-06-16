@@ -26,15 +26,15 @@
                                 </div>
                                 <div class="panel-block">
                                     <label class="checkbox">
-                                        <input type="checkbox"{{ ' checked' if candelete == 'true' else '' }} onclick="updatePreventDelete(this.checked);">Prevent deletion</input>
+                                        <input type="checkbox"{{ ' checked' if candelete == 'true' else '' }} onclick="updatePreventDelete(this.checked);"> Prevent deletion</input>
                                     </label>
                                 </div>
                                 <div class="panel-block">
                                     <label class="radio">
-                                        <input type="radio" name="defprovider" value="azurerm"{{ ' checked' if defprovider == 'azurerm' else '' }} onclick="updateDefaultProvider(this.value);">Azure</input>
+                                        <input type="radio" name="defprovider" value="azurerm"{{ ' checked' if defprovider == 'azurerm' else '' }} onclick="updateDefaultProvider(this.value);"> Azure</input>
                                     </label>
                                     <label class="radio">
-                                        <input type="radio" name="defprovider" value="aws"{{ ' checked' if defprovider == 'aws' else '' }} onclick="updateDefaultProvider(this.value);">AWS</input>
+                                        <input type="radio" name="defprovider" value="aws"{{ ' checked' if defprovider == 'aws' else '' }} onclick="updateDefaultProvider(this.value);"> AWS</input>
                                     </label>
                                 </div>
                             </article>

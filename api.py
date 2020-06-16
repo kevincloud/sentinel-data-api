@@ -89,17 +89,17 @@ def can_delete():
 
 @app.route('/default-provider', strict_slashes=False, methods=['GET'])
 def get_def_provider():
-    retval = "azure"
+    retval = "azurerm"
     try:
         items = table_service.query_entities(table_name, filter="PartitionKey eq 'default-provider'")
     except ValueError:
-        retval = "azure"
+        retval = "azurerm"
     else:
         for item in items:
             retval = item.RowKey
     
     if retval is None:
-        retval = "azure"
+        retval = "azurerm"
     
     return '{ "default-provider": "' + retval + '" }'
 
@@ -134,7 +134,7 @@ def reset_data():
             "true"
         ],
         "default-provider": [
-            "azure"
+            "azurerm"
         ]
     }
 
