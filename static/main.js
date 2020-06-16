@@ -75,3 +75,16 @@ function deleteProhibitedResource(item) {
         alert(xhr);
     });
 }
+
+function resetData() {
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/reset",
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}

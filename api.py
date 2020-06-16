@@ -52,6 +52,62 @@ def get_list(list_name):
     
     return json.dumps(listvalues)
 
+@app.route('/can-delete', strict_slashes=False, methods=['GET'])
+def can_delete():
+    retval = "false"
+    try:
+        items = table_service.query_entities(table_name, filter="PartitionKey eq 'prevent-deletion'")
+    except ValueError:
+        retval = "false"
+    else:
+        for item in items:
+            retval = item.RowKey
+    
+    if retval != "true":
+        retval = "false"
+    
+    return '{ "prevent-deletion": "' + retval + '" }'
+
+@app.route('/reset', strict_slashes=False, methods=['GET'])
+def reset_data():
+    data_set = {
+        "required-modules": [
+            "custom-vnet",
+            "custom-sg",
+            "custom-blob"
+        ],
+        "approved-instances": [
+            "Standard_A1_v2",
+            "Standard_A2_v2",
+            "Standard_A4_v2",
+            "Standard_A8_v2"
+        ],
+        "prohibited-resources": [
+            "azurerm_resource_group",
+            "azurerm_virtual_network",
+            "azurerm_network_security_group",
+            "azurerm_subnet_network_security_group_association"
+        ],
+        "prevent-deletion": [
+            "true"
+        ]
+    }
+
+    # delete all entries
+    items = table_service.query_entities(table_name)
+    for itm in items:
+        table_service.delete_entity(table_name, itm.PartitionKey, itm.RowKey)
+
+    # add all entries
+    for category in data_set:
+        for entry in data_set[category]:
+            item = Entity()
+            item.PartitionKey = category
+            item.RowKey = entry
+            table_service.insert_entity(table_name, item)
+
+    return '{ "status": "ok" }'
+
 def get_value(request, key):
     retval = request.params.get(key)
     if not retval:
@@ -82,8 +138,6 @@ def remove_item(listname, value):
     
     return True
 
-def get_value(req, key):
-    return req.args.get(key)
 
 
 if __name__ == '__main__':
