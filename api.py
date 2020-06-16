@@ -39,7 +39,7 @@ def get_list(list_name, provider):
         else:
             for item in items:
                 if str(item.RowKey).endswith(provider):
-                    listvalues.append(str(item.RowKey).replace("/" + provider, ""))
+                    listvalues.append(str(item.RowKey).replace("|" + provider, ""))
     else:
         return json.dumps(listvalues)
     
@@ -107,28 +107,28 @@ def get_def_provider():
 def reset_data():
     data_set = {
         "required-modules": [
-            "custom-vnet/azurerm",
-            "custom-sg/azurerm",
-            "custom-blob/azurerm",
-            "custom-vpc/aws",
-            "custom-sg/aws",
-            "custom-s3/aws"
+            "custom-vnet|azurerm",
+            "custom-sg|azurerm",
+            "custom-blob|azurerm",
+            "custom-vpc|aws",
+            "custom-sg|aws",
+            "custom-s3|aws"
         ],
         "approved-instances": [
-            "Standard_A1_v2/azurerm",
-            "Standard_A2_v2/azurerm",
-            "Standard_A4_v2/azurerm",
-            "Standard_A8_v2/azurerm",
-            "t3.micro/aws",
-            "t3.small/aws",
-            "t3.medium/aws",
-            "t3.large/aws"
+            "Standard_A1_v2|azurerm",
+            "Standard_A2_v2|azurerm",
+            "Standard_A4_v2|azurerm",
+            "Standard_A8_v2|azurerm",
+            "t3.micro|aws",
+            "t3.small|aws",
+            "t3.medium|aws",
+            "t3.large|aws"
         ],
         "prohibited-resources": [
-            "azurerm_resource_group/azurerm",
-            "azurerm_virtual_network/azurerm",
-            "azurerm_network_security_group/azurerm",
-            "azurerm_subnet_network_security_group_association/azurerm"
+            "azurerm_resource_group|azurerm",
+            "azurerm_virtual_network|azurerm",
+            "azurerm_network_security_group|azurerm",
+            "azurerm_subnet_network_security_group_association|azurerm"
         ],
         "prevent-deletion": [
             "true"
@@ -196,7 +196,7 @@ def update_item(key, value):
 def add_item(listname, value, provider):
     item = Entity()
     item.PartitionKey = listname
-    item.RowKey = value + '/' + provider
+    item.RowKey = value + '|' + provider
     try:
         table_service.insert_entity(table_name, item)
     except ValueError:
@@ -206,7 +206,7 @@ def add_item(listname, value, provider):
 
 def remove_item(listname, value, provider):
     try:
-        table_service.delete_entity(table_name, listname, value + '/' + provider)
+        table_service.delete_entity(table_name, listname, value + '|' + provider)
     except ValueError:
         return False
     
