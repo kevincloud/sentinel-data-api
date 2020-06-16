@@ -22,8 +22,8 @@ table_name = identifier + "-cosmos-table"
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/list/<list_name>', strict_slashes=False, methods=['GET'])
-def get_list(list_name):
+@app.route('/list/<list_name>/<provider>', strict_slashes=False, methods=['GET'])
+def get_list(list_name, provider):
     logging.info('Started function get_list()')
 
     policylist = list_name
@@ -38,23 +38,34 @@ def get_list(list_name):
             pass
         else:
             for item in items:
-                listvalues.append(item.RowKey)
+                if str(item.RowKey).endswith(provider):
+                    listvalues.append(str(item.RowKey).replace("/" + provider, ""))
     else:
         return json.dumps(listvalues)
     
     if additem:
-        if add_item(policylist, additem):
+        if add_item(policylist, additem, provider):
             listvalues.append(additem)
         else:
             return json.dumps(listvalues)
     
     if delitem:
-        if remove_item(policylist, delitem):
+        if remove_item(policylist, delitem, provider):
             listvalues.remove(delitem)
         else:
             return json.dumps(listvalues)
     
     return json.dumps(listvalues)
+
+@app.route('/set-provider', strict_slashes=False, methods=['GET'])
+def set_provider():
+    provider = get_value(request, 'provider')
+    update_item("default-provider", provider)
+
+@app.route('/deletion-policy', strict_slashes=False, methods=['GET'])
+def set_provider():
+    value = get_value(request, 'value')
+    update_item("prevent-deletion", value)
 
 @app.route('/can-delete', strict_slashes=False, methods=['GET'])
 def can_delete():
@@ -72,28 +83,54 @@ def can_delete():
     
     return '{ "prevent-deletion": "' + retval + '" }'
 
+@app.route('/default-provider', strict_slashes=False, methods=['GET'])
+def can_delete():
+    retval = "azure"
+    try:
+        items = table_service.query_entities(table_name, filter="PartitionKey eq 'default-provider'")
+    except ValueError:
+        retval = "azure"
+    else:
+        for item in items:
+            retval = item.RowKey
+    
+    if retval is None:
+        retval = "azure"
+    
+    return '{ "default-provider": "' + retval + '" }'
+
 @app.route('/reset', strict_slashes=False, methods=['GET'])
 def reset_data():
     data_set = {
         "required-modules": [
-            "custom-vnet",
-            "custom-sg",
-            "custom-blob"
+            "custom-vnet/azurerm",
+            "custom-sg/azurerm",
+            "custom-blob/azurerm",
+            "custom-vpc/aws",
+            "custom-sg/aws",
+            "custom-s3/aws"
         ],
         "approved-instances": [
-            "Standard_A1_v2",
-            "Standard_A2_v2",
-            "Standard_A4_v2",
-            "Standard_A8_v2"
+            "Standard_A1_v2/azurerm",
+            "Standard_A2_v2/azurerm",
+            "Standard_A4_v2/azurerm",
+            "Standard_A8_v2/azurerm",
+            "t3.micro/aws",
+            "t3.small/aws",
+            "t3.medium/aws",
+            "t3.large/aws"
         ],
         "prohibited-resources": [
-            "azurerm_resource_group",
-            "azurerm_virtual_network",
-            "azurerm_network_security_group",
-            "azurerm_subnet_network_security_group_association"
+            "azurerm_resource_group/azurerm",
+            "azurerm_virtual_network/azurerm",
+            "azurerm_network_security_group/azurerm",
+            "azurerm_subnet_network_security_group_association/azurerm"
         ],
         "prevent-deletion": [
             "true"
+        ],
+        "default-provider": [
+            "azure"
         ]
     }
 
@@ -104,10 +141,10 @@ def reset_data():
 
     # add all entries
     for category in data_set:
-        for entry in data_set[category]:
+        for value in data_set[category]:
             item = Entity()
             item.PartitionKey = category
-            item.RowKey = entry
+            item.RowKey = value
             table_service.insert_entity(table_name, item)
 
     return '{ "status": "ok" }'
@@ -126,10 +163,25 @@ def get_value(request, key):
 def get_value(req, key):
     return req.args.get(key)
 
-def add_item(listname, value):
+def update_item(key, value):
     item = Entity()
-    item.PartitionKey = listname
+    item.PartitionKey = key
     item.RowKey = value
+
+    old_value = ""
+    try:
+        entries = table_service.query_entities(table_name, filter="PartitionKey eq '" + key + "'")
+    except ValueError:
+        old_value = ""
+    else:
+        for entry in entries:
+            old_value = entry.RowKey
+    
+    try:
+        table_service.delete_entity(table_name, key, old_value)
+    except ValueError:
+        return False
+
     try:
         table_service.insert_entity(table_name, item)
     except ValueError:
@@ -137,9 +189,20 @@ def add_item(listname, value):
     
     return True
 
-def remove_item(listname, value):
+def add_item(listname, value, provider):
+    item = Entity()
+    item.PartitionKey = listname
+    item.RowKey = value + '/' + provider
     try:
-        table_service.delete_entity(table_name, listname, value)
+        table_service.insert_entity(table_name, item)
+    except ValueError:
+        return False
+    
+    return True
+
+def remove_item(listname, value, provider):
+    try:
+        table_service.delete_entity(table_name, listname, value + '/' + provider)
     except ValueError:
         return False
     

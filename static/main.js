@@ -88,3 +88,29 @@ function resetData() {
         alert(xhr);
     });
 }
+
+function updateDefaultProvider(value) {
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/set-provider?provider=" + value,
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}
+
+function updatePreventDelete(value) {
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/deletion-policy?value=" + value,
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}

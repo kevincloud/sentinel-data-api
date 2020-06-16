@@ -19,14 +19,37 @@
                     </p>
                     <div class="columns is-centered">
                         <div class="column is-3 has-text-centered">
+                            <article class="panel is-primary">
+                                <p class="panel-heading">Options</p>
+                                <div class="panel-block">
+                                    <button class="button is-primary" onclick="resetData();">Reset data</button>
+                                </div>
+                                <div class="panel-block">
+                                    <label class="checkbox">
+                                        <input type="checkbox"{{ ' checked' if candelete == 'true' else '' }} onclick="updatePreventDelete(this.checked);">Prevent deletion</input>
+                                    </label>
+                                </div>
+                                <div class="panel-block">
+                                    <label class="radio">
+                                        <input type="radio" name="defprovider" value="azurerm"{{ ' checked' if defprovider == 'azurerm' else '' }} onclick="updateDefaultProvider(this.value);">Azure</input>
+                                    </label>
+                                    <label class="radio">
+                                        <input type="radio" name="defprovider" value="aws"{{ ' checked' if defprovider == 'aws' else '' }} onclick="updateDefaultProvider(this.value);">AWS</input>
+                                    </label>
+                                </div>
+                            </article>
+                        </div>
+                        <!--
+                        <div class="column is-3 has-text-centered">
                             <div class="box has-background-info">
                                 <h5 class="title is-5 has-text-info-light">Options</h5>
                             </div>
                             <button class="button is-primary" onclick="resetData();">Reset data</button>
                             <label class="checkbox">
-                                <input type="checkbox" {{ 'checked' if candelete == 'true' else '' }}>Prevent deletion</input>
+                                <input type="checkbox"{{ ' checked' if candelete == 'true' else '' }}>Prevent deletion</input>
                             </label>
                         </div>
+                        -->
                         <div class="column is-3 has-text-centered">
                             <div class="box has-background-info">
                                 <h5 class="title is-5 has-text-info-light">Required Modules</h5>
