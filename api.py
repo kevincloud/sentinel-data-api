@@ -123,6 +123,9 @@ def get_value(request, key):
             retval = req_body.get(key)
     return retval
 
+def get_value(req, key):
+    return req.args.get(key)
+
 def add_item(listname, value):
     item = Entity()
     item.PartitionKey = listname

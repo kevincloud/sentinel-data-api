@@ -16,13 +16,13 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    res = requests.get('http://sentinel-data.' + zone_name + ':8080/list/required-modules')
+    res = requests.get('http://localhost:8080/list/required-modules')
     reqmods = json.loads(res.text)
 
-    res = requests.get('http://sentinel-data.' + zone_name + ':8080/list/approved-instances')
+    res = requests.get('http://localhost:8080/list/approved-instances')
     appinst = json.loads(res.text)
 
-    res = requests.get('http://sentinel-data.' + zone_name + ':8080/list/prohibited-resources')
+    res = requests.get('http://localhost:8080/list/prohibited-resources')
     probres = json.loads(res.text)
 
     return render_template("index.html", reqmods=reqmods, appinst=appinst, probres=probres)
