@@ -88,7 +88,7 @@ def can_delete():
     return '{ "prevent-deletion": "' + retval + '" }'
 
 @app.route('/default-provider', strict_slashes=False, methods=['GET'])
-def can_delete():
+def get_def_provider():
     retval = "azure"
     try:
         items = table_service.query_entities(table_name, filter="PartitionKey eq 'default-provider'")
