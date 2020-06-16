@@ -32,9 +32,13 @@ def get_list(list_name):
 
     listvalues = []
     if policylist:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq '" + policylist + "'")
-        for item in items:
-            listvalues.append(item.RowKey)
+        try:
+            items = table_service.query_entities(table_name, filter="PartitionKey eq '" + policylist + "'")
+        except ValueError:
+            pass
+        else:
+            for item in items:
+                listvalues.append(item.RowKey)
     else:
         return json.dumps(listvalues)
     
