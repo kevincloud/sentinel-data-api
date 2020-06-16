@@ -24,6 +24,10 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
+            .spanbox {
+                width: 80%;
+                text-align: left;
+            }
         </style>
     </head>
     <body>
@@ -129,8 +133,8 @@
                             </form>
                             <!-- start element -->
                             {% for res in probres %}
-                            <div class="notification box px-4 py-1 my-3 has-background-light has-text-left ellipsis">
-                                {{ res }}
+                            <div class="notification box px-4 py-1 my-3 has-background-light has-text-left">
+                                <span class="spanbox ellipsis">{{ res }}</span>
                                 <button class="delete" value="{{ res }}" onclick="deleteProhibitedResource(this);"></button>
                            </div>
                            {% endfor %}
