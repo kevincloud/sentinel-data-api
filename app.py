@@ -25,7 +25,10 @@ def index():
     res = requests.get('http://localhost:8080/list/prohibited-resources')
     probres = json.loads(res.text)
 
-    return render_template("index.html", reqmods=reqmods, appinst=appinst, probres=probres)
+    res = requests.get('http://localhost:8080/list/can-delete')
+    candelete = json.loads(res.text)
+
+    return render_template("index.html", reqmods=reqmods, appinst=appinst, probres=probres, candelete=candelete)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)

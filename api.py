@@ -56,21 +56,21 @@ def get_list(list_name):
     
     return json.dumps(listvalues)
 
-# @app.route('/can-delete', strict_slashes=False, methods=['GET'])
-# def can_delete():
-#     retval = "false"
-#     try:
-#         items = table_service.query_entities(table_name, filter="PartitionKey eq 'prevent-deletion'")
-#     except ValueError:
-#         retval = "false"
-#     else:
-#         for item in items:
-#             retval = item.RowKey
+@app.route('/can-delete', strict_slashes=False, methods=['GET'])
+def can_delete():
+    retval = "false"
+    try:
+        items = table_service.query_entities(table_name, filter="PartitionKey eq 'prevent-deletion'")
+    except ValueError:
+        retval = "false"
+    else:
+        for item in items:
+            retval = item.RowKey
     
-#     if retval != "true":
-#         retval = "false"
+    if retval != "true":
+        retval = "false"
     
-#     return '{ "prevent-deletion": "' + retval + '" }'
+    return '{ "prevent-deletion": "' + retval + '" }'
 
 @app.route('/reset', strict_slashes=False, methods=['GET'])
 def reset_data():
