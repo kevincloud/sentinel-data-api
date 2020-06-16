@@ -65,7 +65,7 @@ def set_provider():
     return '{ "status": "ok" }'
 
 @app.route('/deletion-policy', strict_slashes=False, methods=['GET'])
-def set_provider():
+def set_del_policy():
     value = get_value(request, 'value')
     update_item("prevent-deletion", value)
 
