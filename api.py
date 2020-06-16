@@ -128,7 +128,14 @@ def reset_data():
             "azurerm_resource_group|azurerm",
             "azurerm_virtual_network|azurerm",
             "azurerm_network_security_group|azurerm",
-            "azurerm_subnet_network_security_group_association|azurerm"
+            "azurerm_subnet_network_security_group_association|azurerm",
+            "aws_internet_gateway|aws",
+            "aws_route|aws",
+            "aws_route_table|aws",
+            "aws_route_table_association|aws",
+            "aws_subnet|aws",
+            "aws_vpc|aws",
+            "aws_security_group|aws",
         ],
         "prevent-deletion": [
             "true"
