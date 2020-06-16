@@ -1,6 +1,6 @@
 function addRequiredModule(item) {
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/required-modules?add=" + item.value,
+        url: "http://" + document.location.hostname + ":8080/list/required-modules?add=" + item,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -26,7 +26,7 @@ function deleteRequiredModule(item) {
 
 function addApprovedInstance(item) {
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/approved-instances?add=" + item.value,
+        url: "http://" + document.location.hostname + ":8080/list/approved-instances?add=" + item,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -52,7 +52,7 @@ function deleteApprovedInstance(item) {
 
 function addProhibitedResource(item) {
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/prohibited-resources?add=" + item.value,
+        url: "http://" + document.location.hostname + ":8080/list/prohibited-resources?add=" + item,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
