@@ -26,7 +26,8 @@ def index():
     probres = json.loads(res.text)
 
     res = requests.get('http://localhost:8080/can-delete')
-    candelete = json.loads(res.text)
+    obj = json.loads(res.text)
+    candelete = obj["prevent-deletion"]
 
     return render_template("index.html", reqmods=reqmods, appinst=appinst, probres=probres, candelete=candelete)
 
