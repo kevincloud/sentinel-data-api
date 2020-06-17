@@ -57,6 +57,59 @@ def get_list(list_name, provider):
     
     return json.dumps(listvalues)
 
+@app.route('/tags', strict_slashes=False, methods=['GET'])
+def tags():
+    additem = get_value(request, 'add')
+    delitem = get_value(request, 'remove')
+
+    listvalues = []
+    try:
+        items = table_service.query_entities(table_name, filter="PartitionKey eq 'mandatory-tags'")
+    except ValueError:
+        pass
+    else:
+        for item in items:
+            listvalues.append(item.RowKey)
+
+    if additem:
+        if add_tag(additem):
+            listvalues.append(additem)
+        else:
+            return json.dumps(listvalues)
+    
+    if delitem:
+        if remove_tag(delitem):
+            listvalues.remove(delitem)
+        else:
+            return json.dumps(listvalues)
+    
+    return json.dumps(listvalues)
+
+@app.route('/max-cost', strict_slashes=False, methods=['GET'])
+def manage_cost():
+    update = get_value(request, 'cost')
+
+    try:
+        items = table_service.query_entities(table_name, filter="PartitionKey eq 'max-cost'")
+    except ValueError:
+        retval = "15"
+    else:
+        for item in items:
+            retval = item.RowKey
+    
+    if update:
+        try:
+            item = Entity()
+            item.PartitionKey = "max-cost"
+            item.RowKey = update
+            table_service.delete_entity(table_name, 'max-cost', retval)
+            table_service.insert_entity(table_name, item)
+            retval = update
+        except ValueError:
+            pass
+
+    return '{ "max-cost": "' + retval + '" }'
+
 @app.route('/set-provider', strict_slashes=False, methods=['GET'])
 def set_provider():
     provider = get_value(request, 'provider')
@@ -141,6 +194,13 @@ def reset_data():
         ],
         "default-provider": [
             "azurerm"
+        ],
+        "mandatory-tags": [
+            "Department",
+            "Environment"
+        ],
+        "max-cost": [
+            "15"
         ]
     }
 
@@ -194,6 +254,25 @@ def update_item(key, value):
 
     try:
         table_service.insert_entity(table_name, item)
+    except ValueError:
+        return False
+    
+    return True
+
+def add_tag(value):
+    item = Entity()
+    item.PartitionKey = "mandatory-tags"
+    item.RowKey = value
+    try:
+        table_service.insert_entity(table_name, item)
+    except ValueError:
+        return False
+    
+    return True
+
+def remove_tag(value):
+    try:
+        table_service.delete_entity(table_name, "mandatory-tags", value)
     except ValueError:
         return False
     
