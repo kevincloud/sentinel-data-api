@@ -146,3 +146,17 @@ function updatePreventDelete(value) {
         alert(xhr);
     });
 }
+
+function updateMaxCost(value) {
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/max-cost?cost=" + value,
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}
+
