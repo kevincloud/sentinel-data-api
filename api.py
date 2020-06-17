@@ -89,6 +89,7 @@ def tags():
 def manage_cost():
     update = get_value(request, 'cost')
 
+    retval = ""
     try:
         items = table_service.query_entities(table_name, filter="PartitionKey eq 'max-cost'")
     except ValueError:
