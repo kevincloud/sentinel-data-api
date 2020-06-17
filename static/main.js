@@ -1,4 +1,6 @@
 function addRequiredModule(item) {
+    var provider = $("input[name='defprovider']:checked").val();
+    alert(provider)
     $.ajax({method: "GET",
         url: "http://" + document.location.hostname + ":8080/list/required-modules?add=" + item,
     }).done(function(result) {
