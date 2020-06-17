@@ -66,6 +66,16 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="panel-block">
+                                    <label class="checkbox">
+                                        <input type="checkbox"{{ ' checked' if ddbenc == 'true' else '' }} onclick="updateEnforceEncryption(this.checked);"> Enforce DynamoDB encryption</input>
+                                    </label>
+                                </div>
+                                <div class="panel-block">
+                                    <label class="checkbox">
+                                        <input type="checkbox"{{ ' checked' if nostar == 'true' else '' }} onclick="updateNoStarAccess(this.checked);"> No IAM '*' access</input>
+                                    </label>
+                                </div>
                             </article>
                         </div>
                         <div class="column is-one-fifth has-text-centered">

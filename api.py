@@ -85,6 +85,58 @@ def tags():
     
     return json.dumps(listvalues)
 
+@app.route('/ddb-encryption', strict_slashes=False, methods=['GET'])
+def ddb_encryption():
+    update = get_value(request, 'enable')
+
+    retval = ""
+    try:
+        items = table_service.query_entities(table_name, filter="PartitionKey eq 'ddb-encryption'")
+    except ValueError:
+        retval = "true"
+    else:
+        for item in items:
+            retval = item.RowKey
+    
+    if update:
+        try:
+            item = Entity()
+            item.PartitionKey = "ddb-encryption"
+            item.RowKey = update
+            table_service.delete_entity(table_name, 'ddb-encryption', retval)
+            table_service.insert_entity(table_name, item)
+            retval = update
+        except ValueError:
+            pass
+
+    return '{ "ddb-encryption": "' + retval + '" }'
+
+@app.route('/no-star-access', strict_slashes=False, methods=['GET'])
+def no_stars():
+    update = get_value(request, 'enable')
+
+    retval = ""
+    try:
+        items = table_service.query_entities(table_name, filter="PartitionKey eq 'no-star-access'")
+    except ValueError:
+        retval = "true"
+    else:
+        for item in items:
+            retval = item.RowKey
+    
+    if update:
+        try:
+            item = Entity()
+            item.PartitionKey = "no-star-access"
+            item.RowKey = update
+            table_service.delete_entity(table_name, 'no-star-access', retval)
+            table_service.insert_entity(table_name, item)
+            retval = update
+        except ValueError:
+            pass
+
+    return '{ "no-star-access": "' + retval + '" }'
+
 @app.route('/max-cost', strict_slashes=False, methods=['GET'])
 def manage_cost():
     update = get_value(request, 'cost')
@@ -202,6 +254,12 @@ def reset_data():
         ],
         "max-cost": [
             "15"
+        ],
+        "ddb-encryption": [
+            "true"
+        ],
+        "no-star-access": [
+            "true"
         ]
     }
 

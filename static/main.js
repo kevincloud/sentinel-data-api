@@ -160,3 +160,28 @@ function updateMaxCost(value) {
     });
 }
 
+function updateEnforceEncryption(value) {
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/ddb-encryption?enable=" + value,
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}
+
+function updateNoStarAccess(value) {
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/no-star-access?enable=" + value,
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}

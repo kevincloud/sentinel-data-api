@@ -40,6 +40,14 @@ def index():
     obj = json.loads(res.text)
     maxcost = obj["max-cost"]
 
+    res = requests.get('http://localhost:8080/ddb-encryption')
+    obj = json.loads(res.text)
+    ddbenc = obj["ddb-encryption"]
+
+    res = requests.get('http://localhost:8080/no-star-access')
+    obj = json.loads(res.text)
+    nostar = obj["no-star-access"]
+
     return render_template("index.html", 
         reqmods=reqmods, 
         appinst=appinst, 
@@ -47,7 +55,9 @@ def index():
         candelete=candelete, 
         defprovider=defprovider,
         maxcost=maxcost,
-        tags=tags)
+        tags=tags,
+        ddbenc=ddbenc,
+        nostar=nostar)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
