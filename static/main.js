@@ -1,8 +1,7 @@
 function addRequiredModule(item) {
     var provider = $("input[name='defprovider']:checked").val();
-    alert(provider)
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/required-modules?add=" + item,
+        url: "http://" + document.location.hostname + ":8080/list/required-modules/" + provider + "?add=" + item,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -14,8 +13,9 @@ function addRequiredModule(item) {
 }
 
 function deleteRequiredModule(item) {
+    var provider = $("input[name='defprovider']:checked").val();
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/required-modules?remove=" + item.value,
+        url: "http://" + document.location.hostname + ":8080/list/required-modules/" + provider + "?remove=" + item.value,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -27,8 +27,9 @@ function deleteRequiredModule(item) {
 }
 
 function addApprovedInstance(item) {
+    var provider = $("input[name='defprovider']:checked").val();
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/approved-instances?add=" + item,
+        url: "http://" + document.location.hostname + ":8080/list/approved-instances/" + provider + "?add=" + item,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -40,8 +41,9 @@ function addApprovedInstance(item) {
 }
 
 function deleteApprovedInstance(item) {
+    var provider = $("input[name='defprovider']:checked").val();
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/approved-instances?remove=" + item.value
+        url: "http://" + document.location.hostname + ":8080/list/approved-instances/" + provider + "?remove=" + item.value
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -53,8 +55,9 @@ function deleteApprovedInstance(item) {
 }
 
 function addProhibitedResource(item) {
+    var provider = $("input[name='defprovider']:checked").val();
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/prohibited-resources?add=" + item,
+        url: "http://" + document.location.hostname + ":8080/list/prohibited-resources/" + provider + "?add=" + item,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -66,8 +69,9 @@ function addProhibitedResource(item) {
 }
 
 function deleteProhibitedResource(item) {
+    var provider = $("input[name='defprovider']:checked").val();
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/list/prohibited-resources?remove=" + item.value,
+        url: "http://" + document.location.hostname + ":8080/list/prohibited-resources/" + provider + "?remove=" + item.value,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
