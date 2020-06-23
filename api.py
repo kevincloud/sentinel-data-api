@@ -4,8 +4,8 @@ import configparser
 from flask import Flask
 from flask import request
 from flask_cors import CORS
-from classes import CosmosData
-from classes import SentinelData
+from classes.CosmosData import CosmosData
+from classes.SentinelData import SentinelData
 
 #######################################
 # Setup a few variables
