@@ -149,7 +149,7 @@ class CosmosData:
                 "Environment"
             ],
             "max-cost": [
-                "15"
+                "100"
             ],
             "ddb-encryption": [
                 "true"
