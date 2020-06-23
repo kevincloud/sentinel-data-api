@@ -158,9 +158,9 @@ class CosmosData:
         }
 
         # delete all entries
-        items = table_service.query_entities(table_name)
+        items = self.table_service.query_entities(self.table_name)
         for itm in items:
-            table_service.delete_entity(table_name, itm.PartitionKey, itm.RowKey)
+            self.table_service.delete_entity(self.table_name, itm.PartitionKey, itm.RowKey)
 
         # add all entries
         for category in data_set:
@@ -168,6 +168,6 @@ class CosmosData:
                 item = Entity()
                 item.PartitionKey = category
                 item.RowKey = value
-                table_service.insert_entity(table_name, item)
+                self.table_service.insert_entity(self.table_name, item)
 
         return True

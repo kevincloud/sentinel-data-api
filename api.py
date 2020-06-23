@@ -60,23 +60,12 @@ def reset_data():
 # Helper functions
 #######################################
 
-def get_value(request, key):
-    retval = request.params.get(key)
-    if not retval:
-        try:
-            req_body = request.get_json()
-        except ValueError:
-            pass
-        else:
-            retval = req_body.get(key)
-    return retval
-
 def evaluator(value, update):
     retval = ""
     if update:
-        retval = data.set_value("ddb-encryption", update)
+        retval = data.set_value(value, update)
     else:
-        retval = data.get_value("ddb-encryption")
+        retval = data.get_value(value)
 
     return retval
 
@@ -88,8 +77,8 @@ def enlistor(list_name, additem, delitem, provider):
     else:
         return data.get_list(list_name, provider)
 
-# def get_value(req, key):
-#     return req.args.get(key)
+def get_value(req, key):
+    return req.args.get(key)
 
 #######################################
 # Let's get this puppy started!
