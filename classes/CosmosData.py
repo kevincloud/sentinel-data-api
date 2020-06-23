@@ -21,8 +21,11 @@ class CosmosData:
     # Get a list of values
     def get_list(self, list_name, provider = None):
         pkey = ""
+        fprov = ""
         if provider is not None:
             pkey = "|" + provider
+        else:
+            fprov = provider
         main_list = []
         if list_name:
             try:
@@ -31,7 +34,7 @@ class CosmosData:
                 pass
             else:
                 for item in items:
-                    if str(item.RowKey).endswith(provider):
+                    if str(item.RowKey).endswith(fprov):
                         main_list.append(str(item.RowKey).replace(pkey, ""))
 
         return main_list
