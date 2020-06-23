@@ -1,16 +1,8 @@
-import logging
-import os
 import json
-import configparser
 import requests
 from flask import Flask
 from flask import render_template
 from flask_cors import CORS
-
-config = configparser.ConfigParser()
-config.read('app.ini')
-
-zone_name = config['App']['ZoneName']
 
 app = Flask(__name__)
 
