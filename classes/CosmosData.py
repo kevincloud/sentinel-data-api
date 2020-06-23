@@ -31,7 +31,7 @@ class CosmosData:
                 pass
             else:
                 for item in items:
-                    if str(item.RowKey).endswith(self.provider):
+                    if str(item.RowKey).endswith(provider):
                         main_list.append(str(item.RowKey).replace(pkey))
 
         return main_list
