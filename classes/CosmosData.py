@@ -46,7 +46,7 @@ class CosmosData:
         item = Entity()
         item.PartitionKey = list_name
         item.RowKey = value + pkey
-        main_list = self.get_list(list_name)
+        main_list = self.get_list(list_name, provider)
         try:
             self.table_service.insert_entity(self.table_name, item)
         except ValueError:
@@ -61,7 +61,7 @@ class CosmosData:
         pkey = ""
         if provider is not None:
             pkey = "|" + provider
-        main_list = self.get_list(list_name)
+        main_list = self.get_list(list_name, provider)
         try:
             self.table_service.delete_entity(self.table_name, list_name, value + pkey)
         except ValueError:
