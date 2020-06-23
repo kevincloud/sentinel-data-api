@@ -3,15 +3,15 @@
 INSTALL_PATH=$(dirname $0)
 INSTALL_PATH=$( cd $INSTALL_PATH && pwd )
 
-pip3 install -r /root/sentinel-data-api/requirements.txt
+pip3 install -r $INSTALL_PATH/requirements.txt
 
 mkdir -p /opt/data-api
-cp /root/sentinel-data-api/api.py /opt/data-api/
-cp -R /root/sentinel-data-api/classes /opt/data-api/
+cp $INSTALL_PATH/api.py /opt/data-api/
+cp -R $INSTALL_PATH/classes /opt/data-api/
 mkdir -p /opt/web-app
-cp /root/sentinel-data-api/app.py /opt/web-app/
-cp -R /root/sentinel-data-api/templates /opt/web-app/
-cp -R /root/sentinel-data-api/static /opt/web-app/
+cp $INSTALL_PATH/app.py /opt/web-app/
+cp -R $INSTALL_PATH/templates /opt/web-app/
+cp -R $INSTALL_PATH/static /opt/web-app/
 
 sudo bash -c "cat >>/opt/web-app/app.ini" <<EOT
 [App]
@@ -63,4 +63,4 @@ EOT
 sudo systemctl enable sentinelweb
 sudo systemctl start sentinelweb
 
-curl http://localhost:8080/reset
+curl -s http://localhost:8080/reset
