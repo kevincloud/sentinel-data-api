@@ -1,282 +1,64 @@
 import logging
 import os
-import json
 import configparser
 from flask import Flask
 from flask import request
 from flask_cors import CORS
-from azure.cosmosdb.table.tableservice import TableService
-from azure.cosmosdb.table.models import Entity
+from classes import CosmosData
+from classes import SentinelData
+
+#######################################
+# Setup a few variables
+#######################################
 
 config = configparser.ConfigParser()
 config.read('app.ini')
-
 identifier = config['App']['Identifier']
-account_name = identifier + "-cosmos-db"
 account_key = config['App']['AccountKey']
-table_endpoint = "https://" + identifier + "-cosmos-db.table.cosmos.azure.com:443/"
-connection_string = "DefaultEndpointsProtocol=https;AccountName=" + account_name + ";AccountKey=" + account_key + ";TableEndpoint=" + table_endpoint + ";"
-table_service = TableService(endpoint_suffix="table.cosmos.azure.com", connection_string=connection_string)
-table_name = identifier + "-cosmos-table"
-
+data_source = CosmosData(account_key, identifier)
+data = SentinelData(data_source)
 app = Flask(__name__)
 CORS(app)
 
+#######################################
+# Setup routes
+#######################################
+
 @app.route('/list/<list_name>/<provider>', strict_slashes=False, methods=['GET'])
 def get_list(list_name, provider):
-    logging.info('Started function get_list()')
-
-    policylist = list_name
-    additem = get_value(request, 'add')
-    delitem = get_value(request, 'remove')
-
-    listvalues = []
-    if policylist:
-        try:
-            items = table_service.query_entities(table_name, filter="PartitionKey eq '" + policylist + "'")
-        except ValueError:
-            pass
-        else:
-            for item in items:
-                if str(item.RowKey).endswith(provider):
-                    listvalues.append(str(item.RowKey).replace("|" + provider, ""))
-    else:
-        return json.dumps(listvalues)
-    
-    if additem:
-        if add_item(policylist, additem, provider):
-            listvalues.append(additem)
-        else:
-            return json.dumps(listvalues)
-    
-    if delitem:
-        if remove_item(policylist, delitem, provider):
-            listvalues.remove(delitem)
-        else:
-            return json.dumps(listvalues)
-    
-    return json.dumps(listvalues)
+    return enlistor(list_name, get_value(request, 'add'), get_value(request, 'remove'), provider)
 
 @app.route('/tags', strict_slashes=False, methods=['GET'])
 def tags():
-    additem = get_value(request, 'add')
-    delitem = get_value(request, 'remove')
-
-    listvalues = []
-    try:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq 'mandatory-tags'")
-    except ValueError:
-        pass
-    else:
-        for item in items:
-            listvalues.append(item.RowKey)
-
-    if additem:
-        if add_tag(additem):
-            listvalues.append(additem)
-        else:
-            return json.dumps(listvalues)
-    
-    if delitem:
-        if remove_tag(delitem):
-            listvalues.remove(delitem)
-        else:
-            return json.dumps(listvalues)
-    
-    return json.dumps(listvalues)
+    return enlistor("mandatory-tags", get_value(request, 'add'), get_value(request, 'remove'), None)
 
 @app.route('/ddb-encryption', strict_slashes=False, methods=['GET'])
 def ddb_encryption():
-    update = get_value(request, 'enable')
-
-    retval = ""
-    try:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq 'ddb-encryption'")
-    except ValueError:
-        retval = "true"
-    else:
-        for item in items:
-            retval = item.RowKey
-    
-    if update:
-        try:
-            item = Entity()
-            item.PartitionKey = "ddb-encryption"
-            item.RowKey = update
-            table_service.delete_entity(table_name, 'ddb-encryption', retval)
-            table_service.insert_entity(table_name, item)
-            retval = update
-        except ValueError:
-            pass
-
-    return '{ "ddb-encryption": "' + retval + '" }'
+    return evaluator("ddb-encryption", get_value(request, 'enable'))
 
 @app.route('/no-star-access', strict_slashes=False, methods=['GET'])
 def no_stars():
-    update = get_value(request, 'enable')
-
-    retval = ""
-    try:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq 'no-star-access'")
-    except ValueError:
-        retval = "true"
-    else:
-        for item in items:
-            retval = item.RowKey
-    
-    if update:
-        try:
-            item = Entity()
-            item.PartitionKey = "no-star-access"
-            item.RowKey = update
-            table_service.delete_entity(table_name, 'no-star-access', retval)
-            table_service.insert_entity(table_name, item)
-            retval = update
-        except ValueError:
-            pass
-
-    return '{ "no-star-access": "' + retval + '" }'
+    return evaluator("no-star-access", get_value(request, 'enable'))
 
 @app.route('/max-cost', strict_slashes=False, methods=['GET'])
 def manage_cost():
-    update = get_value(request, 'cost')
-
-    retval = ""
-    try:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq 'max-cost'")
-    except ValueError:
-        retval = "15"
-    else:
-        for item in items:
-            retval = item.RowKey
-    
-    if update:
-        try:
-            item = Entity()
-            item.PartitionKey = "max-cost"
-            item.RowKey = update
-            table_service.delete_entity(table_name, 'max-cost', retval)
-            table_service.insert_entity(table_name, item)
-            retval = update
-        except ValueError:
-            pass
-
-    return '{ "max-cost": "' + retval + '" }'
-
-@app.route('/set-provider', strict_slashes=False, methods=['GET'])
-def set_provider():
-    provider = get_value(request, 'provider')
-    update_item("default-provider", provider)
-
-    return '{ "status": "ok" }'
-
-@app.route('/deletion-policy', strict_slashes=False, methods=['GET'])
-def set_del_policy():
-    value = get_value(request, 'value')
-    update_item("prevent-deletion", value)
-
-    return '{ "status": "ok" }'
-
-@app.route('/can-delete', strict_slashes=False, methods=['GET'])
-def can_delete():
-    retval = "false"
-    try:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq 'prevent-deletion'")
-    except ValueError:
-        retval = "false"
-    else:
-        for item in items:
-            retval = item.RowKey
-    
-    if retval != "true":
-        retval = "false"
-    
-    return '{ "prevent-deletion": "' + retval + '" }'
+    return evaluator("max-cost", get_value(request, 'cost'))
 
 @app.route('/default-provider', strict_slashes=False, methods=['GET'])
-def get_def_provider():
-    retval = "azurerm"
-    try:
-        items = table_service.query_entities(table_name, filter="PartitionKey eq 'default-provider'")
-    except ValueError:
-        retval = "azurerm"
-    else:
-        for item in items:
-            retval = item.RowKey
-    
-    if retval is None:
-        retval = "azurerm"
-    
-    return '{ "default-provider": "' + retval + '" }'
+def set_provider():
+    return evaluator("default-provider", get_value(request, 'value'))
+
+@app.route('/prevent-deletion', strict_slashes=False, methods=['GET'])
+def set_del_policy():
+    return evaluator("prevent-deletion", get_value(request, 'enable'))
 
 @app.route('/reset', strict_slashes=False, methods=['GET'])
 def reset_data():
-    data_set = {
-        "required-modules": [
-            "custom-vnet|azurerm",
-            "custom-sg|azurerm",
-            "custom-blob|azurerm",
-            "custom-vpc|aws",
-            "custom-sg|aws"
-        ],
-        "approved-instances": [
-            "Standard_A1_v2|azurerm",
-            "Standard_A2_v2|azurerm",
-            "Standard_A4_v2|azurerm",
-            "Standard_A8_v2|azurerm",
-            "t3.micro|aws",
-            "t3.small|aws",
-            "t3.medium|aws",
-            "t3.large|aws"
-        ],
-        "prohibited-resources": [
-            "azurerm_resource_group|azurerm",
-            "azurerm_virtual_network|azurerm",
-            "azurerm_network_security_group|azurerm",
-            "azurerm_subnet_network_security_group_association|azurerm",
-            "aws_internet_gateway|aws",
-            "aws_route|aws",
-            "aws_route_table|aws",
-            "aws_route_table_association|aws",
-            "aws_subnet|aws",
-            "aws_vpc|aws",
-            "aws_security_group|aws",
-        ],
-        "prevent-deletion": [
-            "true"
-        ],
-        "default-provider": [
-            "azurerm"
-        ],
-        "mandatory-tags": [
-            "Department",
-            "Environment"
-        ],
-        "max-cost": [
-            "15"
-        ],
-        "ddb-encryption": [
-            "true"
-        ],
-        "no-star-access": [
-            "true"
-        ]
-    }
+    return data.reset_data()
 
-    # delete all entries
-    items = table_service.query_entities(table_name)
-    for itm in items:
-        table_service.delete_entity(table_name, itm.PartitionKey, itm.RowKey)
-
-    # add all entries
-    for category in data_set:
-        for value in data_set[category]:
-            item = Entity()
-            item.PartitionKey = category
-            item.RowKey = value
-            table_service.insert_entity(table_name, item)
-
-    return '{ "status": "ok" }'
+#######################################
+# Helper functions
+#######################################
 
 def get_value(request, key):
     retval = request.params.get(key)
@@ -289,74 +71,29 @@ def get_value(request, key):
             retval = req_body.get(key)
     return retval
 
-def get_value(req, key):
-    return req.args.get(key)
-
-def update_item(key, value):
-    item = Entity()
-    item.PartitionKey = key
-    item.RowKey = value
-
-    old_value = ""
-    try:
-        entries = table_service.query_entities(table_name, filter="PartitionKey eq '" + key + "'")
-    except ValueError:
-        old_value = ""
+def evaluator(value, update):
+    retval = ""
+    if update:
+        retval = data.set_value("ddb-encryption", update)
     else:
-        for entry in entries:
-            old_value = entry.RowKey
-    
-    try:
-        table_service.delete_entity(table_name, key, old_value)
-    except ValueError:
-        return False
+        retval = data.get_value("ddb-encryption")
 
-    try:
-        table_service.insert_entity(table_name, item)
-    except ValueError:
-        return False
-    
-    return True
+    return retval
 
-def add_tag(value):
-    item = Entity()
-    item.PartitionKey = "mandatory-tags"
-    item.RowKey = value
-    try:
-        table_service.insert_entity(table_name, item)
-    except ValueError:
-        return False
-    
-    return True
+def enlistor(list_name, additem, delitem, provider):
+    if additem:
+        return data.add_to_list(list_name, additem, provider)
+    elif delitem:
+        return data.remove_from_list(list_name, delitem, provider)
+    else:
+        return data.get_list(list_name, provider)
 
-def remove_tag(value):
-    try:
-        table_service.delete_entity(table_name, "mandatory-tags", value)
-    except ValueError:
-        return False
-    
-    return True
+# def get_value(req, key):
+#     return req.args.get(key)
 
-def add_item(listname, value, provider):
-    item = Entity()
-    item.PartitionKey = listname
-    item.RowKey = value + '|' + provider
-    try:
-        table_service.insert_entity(table_name, item)
-    except ValueError:
-        return False
-    
-    return True
-
-def remove_item(listname, value, provider):
-    try:
-        table_service.delete_entity(table_name, listname, value + '|' + provider)
-    except ValueError:
-        return False
-    
-    return True
-
-
+#######################################
+# Let's get this puppy started!
+#######################################
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

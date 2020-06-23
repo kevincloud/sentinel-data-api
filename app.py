@@ -32,7 +32,7 @@ def index():
     res = requests.get('http://localhost:8080/tags')
     tags = json.loads(res.text)
 
-    res = requests.get('http://localhost:8080/can-delete')
+    res = requests.get('http://localhost:8080/prevent-deletion')
     obj = json.loads(res.text)
     candelete = obj["prevent-deletion"]
 

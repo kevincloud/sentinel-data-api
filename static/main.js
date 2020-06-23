@@ -123,7 +123,7 @@ function resetData() {
 
 function updateDefaultProvider(value) {
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/set-provider?provider=" + value,
+        url: "http://" + document.location.hostname + ":8080/default-provider?value=" + value,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
@@ -136,7 +136,7 @@ function updateDefaultProvider(value) {
 
 function updatePreventDelete(value) {
     $.ajax({method: "GET",
-        url: "http://" + document.location.hostname + ":8080/deletion-policy?value=" + value,
+        url: "http://" + document.location.hostname + ":8080/prevent-deletion?enable=" + value,
     }).done(function(result) {
         window.location.reload();
     }).fail(function(xhr, status, error) {
