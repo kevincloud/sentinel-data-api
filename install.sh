@@ -43,6 +43,7 @@ EOT
 
 sudo systemctl enable sentineldata
 sudo systemctl start sentineldata
+echo "API service installed successfully."
 
 # Add Front-end service
 echo "Installing systemd service for Web..."
@@ -62,5 +63,11 @@ EOT
 
 sudo systemctl enable sentinelweb
 sudo systemctl start sentinelweb
+echo "Web service installed successfully."
 
+sleep 10
+
+echo "Load initial data..."
 curl -s http://localhost:8080/reset
+
+echo "Installation complete!"
