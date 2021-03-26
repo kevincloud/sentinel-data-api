@@ -140,7 +140,12 @@ class CosmosData:
             ],
             "allowed-resources": [
                 "azurerm_virtual_machine|azurerm",
-                "aws_instance|aws"
+                "azurerm_network_interface|azurerm",
+                "azurerm_public_ip|azurerm",
+                "azurerm_storage_account|azurerm",
+                "aws_instance|aws",
+                "aws_s3_bucket|aws",
+                "aws_s3_bucket_policy|aws"
             ],
             "prevent-deletion": [
                 "true"
