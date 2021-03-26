@@ -47,6 +47,7 @@ def index():
         reqmods=reqmods, 
         appinst=appinst, 
         probres=probres, 
+        allres=allres,
         candelete=candelete, 
         defprovider=defprovider,
         maxcost=maxcost,
