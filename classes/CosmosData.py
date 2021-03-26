@@ -136,7 +136,11 @@ class CosmosData:
                 "aws_route_table_association|aws",
                 "aws_subnet|aws",
                 "aws_vpc|aws",
-                "aws_security_group|aws",
+                "aws_security_group|aws"
+            ],
+            "allowed-resources": [
+                "azurerm_virtual_machine|azurerm",
+                "aws_instance|aws"
             ],
             "prevent-deletion": [
                 "true"

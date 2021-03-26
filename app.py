@@ -21,6 +21,9 @@ def index():
     res = requests.get('http://localhost:8080/list/prohibited-resources/' + defprovider)
     probres = json.loads(res.text)
 
+    res = requests.get('http://localhost:8080/list/allowed-resources/' + defprovider)
+    allres = json.loads(res.text)
+
     res = requests.get('http://localhost:8080/tags')
     tags = json.loads(res.text)
 

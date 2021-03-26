@@ -155,6 +155,31 @@
                         </div>
                         <div class="column is-one-fifth has-text-centered">
                             <div class="box has-background-info">
+                                <h5 class="title is-5 has-text-info-light">Allowed Resources</h5>
+                            </div>
+                            <form>
+                                <div class="field has-addons">
+                                    <div class="control is-expanded">
+                                        <input id="add-allowed-resource" class="input is-info" type="text" placeholder="Add allowed resource">
+                                    </div>
+                                    <div class="control">
+                                        <button class="button is-primary" onclick="addAllowedResource($('#add-allowed-resource').val());">+</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- start element -->
+                            {% for res in allres %}
+                            <div class="notification box pl-4 pr-6 py-1 my-3 has-background-light has-text-left" data-tooltip="{{ res }}">
+                                <div class="ellipsis">
+                                    {{ res }}
+                                </div>
+                                <button class="delete" value="{{ res }}" onclick="deleteAllowedResource(this);"></button>
+                            </div>
+                           {% endfor %}
+                           <!-- end element -->
+                        </div>
+                        <div class="column is-one-fifth has-text-centered">
+                            <div class="box has-background-info">
                                 <h5 class="title is-5 has-text-info-light">Mandatory Tags</h5>
                             </div>
                             <form>

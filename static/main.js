@@ -82,6 +82,34 @@ function deleteProhibitedResource(item) {
     });
 }
 
+function addAllowedResource(item) {
+    var provider = $("input[name='defprovider']:checked").val();
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/list/allowed-resources/" + provider + "?add=" + item,
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}
+
+function deleteAllowedResource(item) {
+    var provider = $("input[name='defprovider']:checked").val();
+    $.ajax({method: "GET",
+        url: "http://" + document.location.hostname + ":8080/list/allowed-resources/" + provider + "?remove=" + item.value,
+    }).done(function(result) {
+        window.location.reload();
+    }).fail(function(xhr, status, error) {
+        xhr.textStatus = status;
+        xhr.errorThrown = error;
+        console.log('Error', xhr);
+        alert(xhr);
+    });
+}
+
 function addMandatoryTag(item) {
     $.ajax({method: "GET",
         url: "http://" + document.location.hostname + ":8080/tags?add=" + item,
